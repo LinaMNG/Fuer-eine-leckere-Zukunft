@@ -138,7 +138,7 @@ def complete():
 if __name__ == "__main__":
     app.run()
 
-@app.route('\recipes')
+@app.route('/recipes')
 def recipes():
     return 'Das tägliche Menü'
 
