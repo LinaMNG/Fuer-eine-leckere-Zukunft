@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <style>
+    .btn-custom-green {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+    .btn-custom-green:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+    </style>
     <div class="mb-3">
       <a href="{{ url_for('recipes') }}" class="btn btn-secondary">Rezepte</a>
     </div>

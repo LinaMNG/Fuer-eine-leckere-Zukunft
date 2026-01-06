@@ -140,6 +140,7 @@ if __name__ == "__main__":
 
 @app.route('/recipes')
 def recipes():
+    recipes = 
     return 'Das tägliche Menü'
 
 
