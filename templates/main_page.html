@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div class="mb-3">
+      <a href="{{ url_for('recipes') }}" class="btn btn-secondary">Rezepte</a>
+    </div>
+
     <ul class="todo-list">
           {% for todo in todos %}
             <li class="todo-item">
