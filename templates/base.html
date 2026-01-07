@@ -16,13 +16,15 @@
     <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
 
     <style>
-      body { background-color: #f9f9f9; }
-      .todo-list { margin-top: 30px; list-style: none; padding: 0; }
-      .todo-item {
-        position: relative; background: #fff;
-        padding: 16px 20px 12px 20px; margin-bottom: 16px; border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.06); line-height: 1.5;
+      body { 
+        background-color: #1a472a;  /* DUNKELGRÜN */
+            color: white;  /* Weiße Schrift für Kontrast */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
       }
+    
+
       .todo-content { font-weight: 600; }
       .todo-date { display: block; color: #999; font-size: 0.9em; margin-top: 6px; }
       .todo-form { margin-top: 28px; background: #fff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
