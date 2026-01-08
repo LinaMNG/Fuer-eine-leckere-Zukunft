@@ -4,6 +4,7 @@ CREATE TABLE users (
     password VARCHAR(250) NOT NULL
 );
 
+
 CREATE TABLE todos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -11,3 +12,21 @@ CREATE TABLE todos (
     due DATETIME,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+ CREATE TABLE ingredient (
+   id INT AUTO_INCREMENT PRIMARY KEY,
+   vegetarisch BOOLEAN,
+   vegan BOOLEAN,
+   laktose BOOLEAN,
+   ingredient_glutenfrei BOOLEAN
+);
+
+CREATE TABLE recipes (
+  recipe_id INT AUTO_INCREMENT PRIMARY KEY,
+  recipe_name VARCHAR(100),
+  recipe_photo VARCHAR(200),
+  recipe_instruction VARCHAR(4000),
+  recipe_mengenangaben VARCHAR(15),
+  recipes_ingredient INT(15)
+  );
+  
