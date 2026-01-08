@@ -16,7 +16,36 @@
     <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
 
     <style>
+    
+    body {
+        background-color: #1a472a;  /* DUNKELGRÜN */
+        color: white;  /* Standardtext weiß */
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* NEU: Titel/Navbar hellbeige */
+    .navbar-brand {
+        color: #f5f5dc !important;  /* HELLBEIGE */
+        font-weight: 800;
+        font-size: 1.5em;
+    }
+    
+    /* Optional: Auch andere Überschriften hellbeige */
+    h1, h2, h3 {
+        color: #f5f5dc;
+    }
+    
+    /* Falls Sie Bootstrap verwenden: */
+    .navbar-default .navbar-brand {
+        color: #f5f5dc;
+    }
+    
+    /* ... restlicher CSS-Code bleibt gleich ... */
+
       body { 
+
         background-color: #1a472a;  /* DUNKELGRÜN */
             color: white;  /* Weiße Schrift für Kontrast */
             font-family: Arial, sans-serif;
