@@ -13,6 +13,11 @@ CREATE TABLE todos (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+CREATE TABLE liked (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+    liked_recipes INT(100) #der nutzer liked die recipes_id
+    );
+
  CREATE TABLE ingredient (
    id INT AUTO_INCREMENT PRIMARY KEY,
    vegetarisch BOOLEAN,
