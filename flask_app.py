@@ -151,6 +151,18 @@ def like_recipe(recipe_id):
 
 @app.route('/recipes')
 def recipes():
+    try:
+        recipes = db_read("""
+            SELECT 
+                recipe_id,
+                recipe_name,
+                recipe_photo,
+                recipe_instruction,
+                recipe_mengenangaben,
+                recipes_ingredient
+            FROM recipes 
+            ORDER BY recipe_id
+        """)
 
 if __name__ == "__main__":
     app.run()
