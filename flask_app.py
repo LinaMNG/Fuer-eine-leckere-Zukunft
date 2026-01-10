@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, jsonify
 from dotenv import load_dotenv
 import os
 import git
@@ -135,14 +135,52 @@ def complete():
     db_write("DELETE FROM todos WHERE user_id=%s AND id=%s", (current_user.id, todo_id,))
     return redirect(url_for("index"))
 
+@app.route('/like_recipe/<int:recipe_id>', methods=['POST'])
+@login_required
+def like_recipe(recipe_id):
+    existing = db_read("SELECT id FROM liked WHERE user_id = %s AND recipe_id = %s", (current_user.id, recipe_id))
+    if existing:
+        db_write("DELETE FROM liked WHERE user_id = %s AND recipe_id = %s", (current_user.id, recipe_id))
+        liked = False
+    else:
+        db_write("INSERT INTO liked (user_id, recipe_id) VALUES (%s, %s)", (current_user.id, recipe_id))
+        liked = True
+    like_count_result = db_read("SELECT COUNT(*) as count FROM liked WHERE recipe_id = %s", (recipe_id,))
+    like_count = like_count_result[0]['count']
+    return jsonify({'liked': liked, 'like_count': like_count})
+
 @app.route('/recipes')
 def recipes():
+    recipes_data = db_read("SELECT recipe_id, recipe_name, recipe_photo, recipe_instruction, recipe_mengenangaben, recipes_ingredient FROM recipes")
     recipes = []
-    return render_template('recipes.html', 
-                            recipes=recipes,
-                            current_user=current_user)
+    for r in recipes_data:
+        recipe = dict(r)
+        # Lade ingredients
+        group = r['recipes_ingredient']
+        if group == 1:
+            ids = list(range(1,10))
+        elif group == 2:
+            ids = list(range(10,18))
+        elif group == 3:
+            ids = list(range(18,23))
+        elif group == 4:
+            ids = list(range(23,32))
+        elif group == 5:
+            ids = list(range(32,40))
+        else:
+            ids = []
+        placeholders = ','.join('?' * len(ids))
+        ingredients = db_read(f"SELECT ingredient_name FROM ingredient WHERE id IN ({placeholders})", ids)
+        recipe['ingredients'] = [i['ingredient_name'] for i in ingredients]
+        # Lade like_count
+        like_count_result = db_read("SELECT COUNT(*) as count FROM liked WHERE recipe_id = %s", (r['recipe_id'],))
+        recipe['like_count'] = like_count_result[0]['count']
+        # user_liked
+        user_liked_result = db_read("SELECT 1 FROM liked WHERE user_id = %s AND recipe_id = %s", (current_user.id, r['recipe_id']))
+        recipe['user_liked'] = len(user_liked_result) > 0
+        recipes.append(recipe)
+    return render_template('recipes.html', recipes=recipes, current_user=current_user)
 
 if __name__ == "__main__":
     app.run()
-
 
