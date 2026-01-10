@@ -65,6 +65,21 @@
 </div>
 {% endif %}
 
+<!-- Modal für Rezept-Details -->
+<div class="modal fade" id="recipeModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="recipeModalTitle"></h4>
+      </div>
+      <div class="modal-body" id="recipeModalBody">
+        <!-- Details werden hier geladen -->
+      </div>
+    </div>
+  </div>
+</div>
+
 <style>
 .recipe-card {
   background: white;
@@ -160,6 +175,27 @@ $(document).ready(function() {
       },
       error: function() {
         alert('Fehler beim Liken des Rezepts');
+      }
+    });
+  });
+
+  // Rezept-Details anzeigen
+  $('.view-recipe-btn').click(function() {
+    var recipeId = $(this).data('recipe-id');
+    $.ajax({
+      type: 'GET',
+      url: '/recipe/' + recipeId,
+      success: function(data) {
+        $('#recipeModalTitle').text(data.recipe_name);
+        $('#recipeModalBody').html(`
+          <p><strong>Zutaten:</strong> ${data.recipes_ingredient}</p>
+          <p><strong>Mengenangaben:</strong> ${data.recipe_mengenangaben}</p>
+          <p><strong>Anweisungen:</strong> ${data.recipe_instruction}</p>
+        `);
+        $('#recipeModal').modal('show');
+      },
+      error: function() {
+        alert('Fehler beim Laden des Rezepts');
       }
     });
   });

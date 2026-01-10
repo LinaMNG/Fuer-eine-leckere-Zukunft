@@ -174,6 +174,13 @@ def recipes():
         import traceback
         traceback.print_exc()
 
+@app.route('/recipe/<int:recipe_id>')
+def recipe_detail(recipe_id):
+    recipe = db_read("SELECT * FROM recipes WHERE recipe_id=%s", (recipe_id,))
+    if recipe:
+        return jsonify(recipe[0])
+    return jsonify({"error": "Rezept nicht gefunden"}), 404
+
 if __name__ == "__main__":
     app.run()
 
