@@ -164,6 +164,16 @@ def recipes():
             ORDER BY recipe_id
         """)
 
+        return render_template(
+            'recipes.html', 
+            recipes=recipes,
+            current_user=current_user
+        )
+    except Exception as e:
+        print(f"FEHLER in /recipes route: {e}")
+        import traceback
+        traceback.print_exc()
+
 if __name__ == "__main__":
     app.run()
 
