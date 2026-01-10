@@ -1,4 +1,4 @@
-@app.route('/like_recipe/<int:recipe_id>', methods=['POST'])
+@app.route('/like_recipe/<int:recipe_id>', methods=['POST'])  # <- HIER FEHLTE <int:recipe_id>
 @login_required
 def like_recipe(recipe_id):
     try:
