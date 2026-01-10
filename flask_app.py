@@ -169,7 +169,7 @@ def recipes():
             ids = list(range(32,40))
         else:
             ids = []
-        placeholders = ','.join('?' * len(ids))
+        placeholders = ','.join('%s' * len(ids))
         ingredients = db_read(f"SELECT ingredient_name FROM ingredient WHERE id IN ({placeholders})", ids)
         recipe['ingredients'] = [i['ingredient_name'] for i in ingredients]
         # Lade like_count
