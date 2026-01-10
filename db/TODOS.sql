@@ -1,13 +1,11 @@
--- Datenbank für "Für eine leckere Zukunft"
 
--- 1. Users Tabelle
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(250) NOT NULL UNIQUE,
     password VARCHAR(250) NOT NULL
 );
 
--- 2. Todos Tabelle
+
 CREATE TABLE todos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -16,7 +14,7 @@ CREATE TABLE todos (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
--- 3. Recipes Tabelle
+
 CREATE TABLE recipes (
   recipe_id INT AUTO_INCREMENT PRIMARY KEY,
   recipe_name VARCHAR(100),
@@ -26,7 +24,7 @@ CREATE TABLE recipes (
   recipes_ingredient INT(15)
 );
 
--- 4. Ingredients Tabelle
+
 CREATE TABLE ingredient (
    id INT AUTO_INCREMENT PRIMARY KEY,
    ingredient_name VARCHAR(100),
@@ -36,7 +34,7 @@ CREATE TABLE ingredient (
    ingredient_glutenfrei BOOLEAN
 );
 
--- 5. Improved Liked Tabelle (mit User-Verbindung)
+
 CREATE TABLE liked (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -47,11 +45,8 @@ CREATE TABLE liked (
     UNIQUE KEY unique_like (user_id, recipe_id)
 );
 
--- =============================================
--- INSERT Statements für Ingredients der 5 Rezepte
--- =============================================
 
--- Ingredients für Hörnli-Auflauf (Rezept 1)
+
 INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingredient_glutenfrei) VALUES
 (1, 'Hörnli', TRUE, TRUE, TRUE, FALSE),
 (2, 'Käse (gerieben)', TRUE, FALSE, FALSE, TRUE),
@@ -63,7 +58,7 @@ INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingred
 (8, 'Pfeffer', TRUE, TRUE, TRUE, TRUE),
 (9, 'Muskatnuss', TRUE, TRUE, TRUE, TRUE);
 
--- Ingredients für Bananen Pancakes (Rezept 2)
+
 INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingredient_glutenfrei) VALUES
 (10, 'Bananen', TRUE, TRUE, TRUE, TRUE),
 (11, 'Eier', TRUE, FALSE, TRUE, TRUE),
@@ -74,7 +69,7 @@ INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingred
 (16, 'Ahornsirup', TRUE, TRUE, TRUE, TRUE),
 (17, 'Öl (zum Braten)', TRUE, TRUE, TRUE, TRUE);
 
--- Ingredients für Rösti (Rezept 3)
+
 INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingredient_glutenfrei) VALUES
 (18, 'Kartoffeln', TRUE, TRUE, TRUE, TRUE),
 (19, 'Zwiebeln', TRUE, TRUE, TRUE, TRUE),
@@ -82,7 +77,7 @@ INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingred
 (21, 'Salz', TRUE, TRUE, TRUE, TRUE),
 (22, 'Pfeffer', TRUE, TRUE, TRUE, TRUE);
 
--- Ingredients für Rüebli Suppe (Rezept 4)
+
 INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingredient_glutenfrei) VALUES
 (23, 'Karotten (Rüebli)', TRUE, TRUE, TRUE, TRUE),
 (24, 'Zwiebeln', TRUE, TRUE, TRUE, TRUE),
@@ -94,7 +89,7 @@ INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingred
 (30, 'Salz', TRUE, TRUE, TRUE, TRUE),
 (31, 'Pfeffer', TRUE, TRUE, TRUE, TRUE);
 
--- Ingredients für Milchreis (Rezept 5)
+
 INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingredient_glutenfrei) VALUES
 (32, 'Rundkornreis', TRUE, TRUE, TRUE, TRUE),
 (33, 'Milch', TRUE, FALSE, FALSE, TRUE),
@@ -105,11 +100,9 @@ INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingred
 (38, 'Salz', TRUE, TRUE, TRUE, TRUE),
 (39, 'Apfelmus', TRUE, TRUE, TRUE, TRUE);
 
--- =============================================
--- INSERT Statements für die 5 Rezepte
--- =============================================
 
--- 1. Hörnli-Auflauf
+
+
 INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipes_ingredient) VALUES (
     1,
     'Hörnli-Auflauf',
@@ -118,7 +111,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
     1
 );
 
--- 2. Bananen Pancakes
+
 INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipes_ingredient) VALUES (
     2,
     'Bananen Pancakes',
@@ -127,7 +120,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
     2
 );
 
--- 3. Rösti
+
 INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipes_ingredient) VALUES (
     3,
     'Rösti',
@@ -136,7 +129,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
     3
 );
 
--- 4. Rüebli Suppe
+-
 INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipes_ingredient) VALUES (
     4,
     'Rüebli Suppe',
@@ -145,7 +138,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
     4
 );
 
--- 5. Milchreis
+
 INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipes_ingredient) VALUES (
     5,
     'Milchreis',
