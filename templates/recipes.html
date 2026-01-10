@@ -1,298 +1,41 @@
-{% extends "base.html" %}
-
-{% block title %}Rezepte - Für eine leckere Zukunft{% endblock %}
-
-{% block content %}
-<div class="row">
-  <div class="col-md-12">
-    <h1>Rezepte</h1>
-    <p class="lead">Entdecke unsere leckeren Rezepte</p>
-  </div>
-</div>
-
-{% if recipes %}
-  {% for row in recipes|batch(3) %}
-  <div class="row" style="margin-top: 30px;">
-    {% for recipe in row %}
-    <div class="col-md-4">
-      <div class="recipe-card">
-        <!-- Rezept Bild -->
-        {% if recipe.recipe_photo %}
-        <img src="{{ url_for('static', filename='uploads/' + recipe.recipe_photo) }}" 
-             alt="{{ recipe.recipe_name }}" class="img-responsive recipe-image">
-        {% else %}
-        <div class="recipe-placeholder">
-          <span class="glyphicon glyphicon-cutlery"></span>
-        </div>
-        {% endif %}
+@app.route('/like_recipe/<int:recipe_id>', methods=['POST'])
+@login_required
+def like_recipe(recipe_id):
+    try:
+        # Prüfen ob bereits geliked
+        existing = db_read(
+            "SELECT id FROM liked WHERE user_id = %s AND recipe_id = %s",
+            (current_user.id, recipe_id)
+        )
         
-        <h3>{{ recipe.recipe_name }}</h3>
+        if existing:
+            # Unlike
+            db_write(
+                "DELETE FROM liked WHERE user_id = %s AND recipe_id = %s",
+                (current_user.id, recipe_id)
+            )
+            liked = False
+        else:
+            # Like
+            db_write(
+                "INSERT INTO liked (user_id, recipe_id) VALUES (%s, %s)",
+                (current_user.id, recipe_id)
+            )
+            liked = True
         
-        <!-- Portionen -->
-        {% if recipe.recipe_mengenangaben %}
-        <p><strong>Portionen:</strong> {{ recipe.recipe_mengenangaben }}</p>
-        {% endif %}
+        # Neuen Like-Count holen
+        like_count_result = db_read(
+            "SELECT COUNT(*) as count FROM liked WHERE recipe_id = %s",
+            (recipe_id,)
+        )
+        like_count = like_count_result[0]['count'] if like_count_result else 0
         
-        <!-- Kurzanleitung -->
-        {% if recipe.recipe_instruction %}
-        <div style="margin-bottom: 15px; max-height: 80px; overflow: hidden;">
-          <p style="font-size: 0.9em; color: #666;">
-            {{ recipe.recipe_instruction[:100] }}{% if recipe.recipe_instruction|length > 100 %}...{% endif %}
-          </p>
-        </div>
-        {% endif %}
+        return jsonify({
+            'success': True,
+            'liked': liked,
+            'like_count': like_count
+        })
         
-        <!-- Like-Button -->
-        <div class="like-section">
-          {% if current_user.is_authenticated %}
-          <form class="like-form" data-recipe-id="{{ recipe.recipe_id }}">
-            <button type="submit" class="like-btn {% if recipe.user_liked %}liked{% endif %}">
-              <span class="glyphicon glyphicon-heart{% if not recipe.user_liked %}-empty{% endif %}"></span>
-              <span class="like-count">{{ recipe.like_count if recipe.like_count else 0 }}</span>
-            </button>
-          </form>
-          {% else %}
-          <a href="{{ url_for('login') }}" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-heart-empty"></span>
-            {{ recipe.like_count if recipe.like_count else 0 }} Likes
-          </a>
-          {% endif %}
-        </div>
-        
-        <!-- Rezept Details Button -->
-        <button class="btn btn-custom-green view-recipe-btn" 
-                data-toggle="modal" 
-                data-target="#recipeModal{{ recipe.recipe_id }}">
-          Rezept anzeigen
-        </button>
-      </div>
-    </div>
-
-    <!-- Modal für Rezept-Details (für jedes Rezept ein eigenes Modal) -->
-    <div class="modal fade" id="recipeModal{{ recipe.recipe_id }}" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header" style="background-color: #1a472a; color: white;">
-            <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;</button>
-            <h4 class="modal-title">{{ recipe.recipe_name }}</h4>
-          </div>
-          <div class="modal-body">
-            <!-- Portionen -->
-            {% if recipe.recipe_mengenangaben %}
-            <div class="alert alert-success" style="background-color: #d4edda; border-color: #c3e6cb; color: #155724;">
-              <strong>Portionen:</strong> {{ recipe.recipe_mengenangaben }}
-            </div>
-            {% endif %}
-            
-            <!-- Vollständige Zubereitung -->
-            <h4 style="color: #1a472a;">Zubereitung</h4>
-            <div style="white-space: pre-line; padding: 15px; background-color: #f8f9fa; border-radius: 5px; margin-bottom: 20px;">
-              {{ recipe.recipe_instruction }}
-            </div>
-            
-            <!-- Zutaten-Info -->
-            {% if recipe.recipes_ingredient %}
-            <h4 style="color: #1a472a;">Zutaten-Informationen</h4>
-            <p>Rezept ID: {{ recipe.recipes_ingredient }}</p>
-            {% endif %}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
-            
-            {% if current_user.is_authenticated %}
-            <!-- Like-Button im Modal -->
-            <form class="like-form-modal" data-recipe-id="{{ recipe.recipe_id }}" style="display: inline;">
-              <button type="submit" class="btn btn-custom-green">
-                <span class="glyphicon glyphicon-heart{% if not recipe.user_liked %}-empty{% endif %}"></span>
-                Gefällt mir
-                <span class="badge">{{ recipe.like_count if recipe.like_count else 0 }}</span>
-              </button>
-            </form>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-  {% endfor %}
-{% else %}
-<div class="row">
-  <div class="col-md-12 text-center">
-    <div class="alert alert-info">
-      Noch keine Rezepte vorhanden.
-    </div>
-  </div>
-</div>
-{% endif %}
-
-<style>
-.recipe-card {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  height: 100%;
-  transition: transform 0.3s ease;
-}
-
-.recipe-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.recipe-image {
-  height: 200px;
-  width: 100%;
-  object-fit: cover;
-  border-radius: 5px;
-  margin-bottom: 15px;
-}
-
-.recipe-placeholder {
-  height: 200px;
-  background-color: #2d6a4f;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  margin-bottom: 15px;
-}
-
-.recipe-placeholder .glyphicon {
-  font-size: 64px;
-}
-
-.like-section {
-  margin: 15px 0;
-}
-
-.like-btn {
-  background: none;
-  border: none;
-  color: #ccc;
-  font-size: 18px;
-  padding: 5px 10px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.like-btn.liked, .like-btn:hover {
-  color: #e63946;
-}
-
-.like-count {
-  margin-left: 5px;
-  font-size: 16px;
-}
-
-.btn-custom-green {
-  background-color: #2d6a4f;
-  border-color: #2d6a4f;
-  color: white;
-  width: 100%;
-}
-
-.btn-custom-green:hover {
-  background-color: #1b4332;
-  border-color: #1b4332;
-}
-
-.modal-header {
-  background-color: #1a472a;
-  color: white;
-}
-</style>
-
-<script>
-$(document).ready(function() {
-  // AJAX für Likes auf den Karten
-  $('.like-form').submit(function(e) {
-    e.preventDefault();
-    
-    var form = $(this);
-    var recipeId = form.data('recipe-id');
-    var likeBtn = form.find('.like-btn');
-    var likeCount = form.find('.like-count');
-    var heartIcon = form.find('.glyphicon');
-    
-    $.ajax({
-      type: 'POST',
-      url: '/like_recipe/' + recipeId,
-      success: function(response) {
-        if (response.success) {
-          // Like-Count aktualisieren
-          likeCount.text(response.like_count);
-          
-          // Button-Status ändern
-          if (response.liked) {
-            likeBtn.addClass('liked');
-            heartIcon.removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
-          } else {
-            likeBtn.removeClass('liked');
-            heartIcon.removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
-          }
-          
-          // Auch den Like-Button im Modal aktualisieren (falls offen)
-          $('.like-form-modal[data-recipe-id="' + recipeId + '"] .badge').text(response.like_count);
-          var modalHeart = $('.like-form-modal[data-recipe-id="' + recipeId + '"] .glyphicon');
-          if (response.liked) {
-            modalHeart.removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
-          } else {
-            modalHeart.removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
-          }
-        }
-      },
-      error: function() {
-        alert('Fehler beim Liken des Rezepts');
-      }
-    });
-  });
-  
-  // AJAX für Likes im Modal
-  $('.like-form-modal').submit(function(e) {
-    e.preventDefault();
-    
-    var form = $(this);
-    var recipeId = form.data('recipe-id');
-    var likeBtn = form.find('.btn');
-    var likeCount = form.find('.badge');
-    var heartIcon = form.find('.glyphicon');
-    
-    $.ajax({
-      type: 'POST',
-      url: '/like_recipe/' + recipeId,
-      success: function(response) {
-        if (response.success) {
-          // Like-Count im Modal aktualisieren
-          likeCount.text(response.like_count);
-          
-          // Button-Status ändern
-          if (response.liked) {
-            heartIcon.removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
-          } else {
-            heartIcon.removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
-          }
-          
-          // Auch den Like-Button auf der Karte aktualisieren
-          $('.like-form[data-recipe-id="' + recipeId + '"] .like-count').text(response.like_count);
-          var cardHeart = $('.like-form[data-recipe-id="' + recipeId + '"] .glyphicon');
-          if (response.liked) {
-            $('.like-form[data-recipe-id="' + recipeId + '"] .like-btn').addClass('liked');
-            cardHeart.removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
-          } else {
-            $('.like-form[data-recipe-id="' + recipeId + '"] .like-btn').removeClass('liked');
-            cardHeart.removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
-          }
-        }
-      },
-      error: function() {
-        alert('Fehler beim Liken des Rezepts');
-      }
-    });
-  });
-});
-</script>
-{% endblock %}
+    except Exception as e:
+        print(f"Fehler beim Liken: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
