@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Rezepte - Für eine leckere Zukunft{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <h1>Rezepte</h1>
+    <p class="lead">Entdecke unsere leckeren Rezepte für eine gesunde Zukunft</p>
+  </div>
+</div>
+
+<!-- Rezepte aus der Datenbank anzeigen -->
+{% if recipes %}
+  {% for row in recipes|batch(3) %}
+  <div class="row" style="margin-top: 30px;">
+    {% for recipe in row %}
+    <div class="col-md-4">
+      <div class="recipe-card">
+        <!-- Rezept Bild (falls vorhanden) -->
+        {% if recipe.recipe_photo %}
+        <img src="{{ url_for('static', filename='uploads/' + recipe.recipe_photo) }}" alt="{{ recipe.recipe_name }}" 
+             class="img-responsive" style="border-radius: 5px; margin-bottom: 15px; height: 200px; width: 100%; object-fit: cover;">
+        {% else %}
+        <div style="height: 200px; background-color: #2d6a4f; border-radius: 5px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; color: white;">
+          <span class="glyphicon glyphicon-cutlery" style="font-size: 64px;"></span>
+        </div>
+        {% endif %}
+        
+        <!-- Rezept Titel -->
+        <h3 style="color: #1a472a; margin-top: 0;">{{ recipe.recipe_name }}</h3>
+        
+        <!-- Mengenangaben -->
+        {% if recipe.recipe_mengenangaben %}
+        <div style="margin-bottom: 10px;">
+          <span class="label label-primary" style="background-color: #40916c;">
+            <span class="glyphicon glyphicon-scale"></span> {{ recipe.recipe_mengenangaben }}
+          </span>
+        </div>
+        {% endif %}
+        
+        <!-- Kurzanleitung (gekürzt) -->
+        {% if recipe.recipe_instruction %}
+        <div style="margin-bottom: 15px;">
+          <h5 style="color: #1a472a;">Zubereitung:</h5>
+          <p style="font-size: 0.9em; line-height: 1.4;">
+            {{ recipe.recipe_instruction[:150] }}{% if recipe.recipe_instruction|length > 150 %}...{% endif %}
+          </p>
+        </div>
+        {% endif %}
+        
+        <!-- Like-Button Bereich -->
+        <div class="recipe-actions" style="border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px;">
+          <div class="row">
+            <div class="col-xs-6">
+              <!-- Like-Button -->
+              <form action="{{ url_for('like_recipe', recipe_id=recipe.recipe_id) }}" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-sm" 
+                        style="background: none; border: none; color: #e63946; padding: 0;">
+                  <span class="glyphicon glyphicon-heart{% if not recipe.user_liked %}-empty{% endif %}" 
+                        style="font-size: 18px;"></span>
+                  <span id="like-count-{{ recipe.recipe_id }}" style="margin-left: 5px;">
+                    {{ recipe.like_count if recipe.like_count else 0 }}
+                  </span>
+                </button>
+              </form>
+            </div>
+            <div class="col-xs-6 text-right">
+              <!-- Vollständiges Rezept anzeigen -->
+              <button type="button" class="btn btn-custom-green btn-sm" 
+                      data-toggle="modal" data-target="#recipeModal{{ recipe.recipe_id }}">
+                <span class="glyphicon glyphicon-eye-open"></span> Anzeigen
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal für vollständiges Rezept -->
+    <div class="modal fade" id="recipeModal{{ recipe.recipe_id }}" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color: #1a472a; color: white;">
+            <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;</button>
+            <h4 class="modal-title">{{ recipe.recipe_name }}</h4>
+          </div>
+          <div class="modal-body">
+            {% if recipe.recipe_photo %}
+            <img src="{{ url_for('static', filename='uploads/' + recipe.recipe_photo) }}" 
+                 alt="{{ recipe.recipe_name }}" class="img-responsive" style="margin-bottom: 20px;">
+            {% endif %}
+            
+            <div class="row">
+              <div class="col-md-6">
+                <h4 style="color: #1a472a;">Zutaten</h4>
+                {% if recipe.ingredients %}
+                <ul>
+                  {% for ingredient in recipe.ingredients %}
+                  <li>{{ ingredient }}</li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                <p>Zutatenliste wird geladen...</p>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <h4 style="color: #1a472a;">Zubereitung</h4>
+                <p style="white-space: pre-line;">{{ recipe.recipe_instruction }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="pull-left">
+              <form action="{{ url_for('like_recipe', recipe_id=recipe.recipe_id) }}" method="POST">
+                <button type="submit" class="btn btn-default">
+                  <span class="glyphicon glyphicon-heart{% if not recipe.user_liked %}-empty{% endif %}" 
+                        style="color: #e63946;"></span>
+                  Gefällt mir
+                  <span class="badge">{{ recipe.like_count if recipe.like_count else 0 }}</span>
+                </button>
+              </form>
+            </div>
+            <button type="button" class="btn btn-custom-green" data-dismiss="modal">Schließen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+{% else %}
+<!-- Keine Rezepte vorhanden -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="recipe-card text-center" style="padding: 60px; background-color: rgba(255,255,255,0.9);">
+      <span class="glyphicon glyphicon-cutlery" style="font-size: 72px; color: #2d6a4f; margin-bottom: 20px;"></span>
+      <h3 style="color: #1a472a;">Noch keine Rezepte verfügbar</h3>
+      <p>Wir arbeiten an neuen leckeren Rezepten für dich!</p>
+      <p>Bald findest du hier unsere besten Rezepte für eine gesunde Ernährung.</p>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<style>
+  .recipe-card {
+    background: white;
+    color: #333;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    height: 100%;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(26, 71, 42, 0.1);
+  }
+  
+  .recipe-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    border-color: rgba(26, 71, 42, 0.3);
+  }
+  
+  .label-primary {
+    background-color: #40916c;
+  }
+  
+  .btn-custom-green {
+    background-color: #2d6a4f;
+    border-color: #2d6a4f;
+    color: white;
+  }
+  
+  .btn-custom-green:hover {
+    background-color: #1b4332;
+    border-color: #1b4332;
+  }
+  
+  .modal-header {
+    background-color: #1a472a;
+    color: white;
+  }
+</style>
+
+<!-- JavaScript für AJAX Likes -->
+<script>
+$(document).ready(function() {
+  // AJAX für Like-Buttons
+  $('form[action*="like_recipe"]').submit(function(e) {
+    e.preventDefault();
+    
+    var form = $(this);
+    var url = form.attr('action');
+    var recipeId = url.split('/').pop();
+    
+    
+      
+          
+          // Herz-Symbol ändern
+          var heartIcon = form.find('.glyphicon-heart, .glyphicon-heart-empty');
+          if (response.liked) {
+            heartIcon.removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
+          } else {
+            heartIcon.removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
+          }
+        }
+    
+ 
+</script>
+{% endblock %}
