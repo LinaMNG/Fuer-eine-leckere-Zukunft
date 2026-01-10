@@ -151,35 +151,6 @@ def like_recipe(recipe_id):
 
 @app.route('/recipes')
 def recipes():
-    recipes_data = db_read("SELECT recipe_id, recipe_name, recipe_photo, recipe_instruction, recipe_mengenangaben, recipes_ingredient FROM recipes")
-    recipes = []
-    for r in recipes_data:
-        recipe = dict(r)
-        # Lade ingredients
-        group = r['recipes_ingredient']
-        if group == 1:
-            ids = list(range(1,10))
-        elif group == 2:
-            ids = list(range(10,18))
-        elif group == 3:
-            ids = list(range(18,23))
-        elif group == 4:
-            ids = list(range(23,32))
-        elif group == 5:
-            ids = list(range(32,40))
-        else:
-            ids = []
-        placeholders = ','.join('%s' * len(ids))
-        ingredients = db_read(f"SELECT ingredient_name FROM ingredient WHERE id IN ({placeholders})", ids)
-        recipe['ingredients'] = [i['ingredient_name'] for i in ingredients]
-        # Lade like_count
-        like_count_result = db_read("SELECT COUNT(*) as count FROM liked WHERE recipe_id = %s", (r['recipe_id'],))
-        recipe['like_count'] = like_count_result[0]['count']
-        # user_liked
-        user_liked_result = db_read("SELECT 1 FROM liked WHERE user_id = %s AND recipe_id = %s", (current_user.id, r['recipe_id']))
-        recipe['user_liked'] = len(user_liked_result) > 0
-        recipes.append(recipe)
-    return render_template('recipes.html', recipes=recipes, current_user=current_user)
 
 if __name__ == "__main__":
     app.run()
