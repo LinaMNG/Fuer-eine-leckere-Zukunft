@@ -194,18 +194,19 @@ $(document).ready(function() {
     var url = form.attr('action');
     var recipeId = url.split('/').pop();
     
-    
+    $.post(url, function(response) {
+      // Like-Count aktualisieren
+      $('#like-count-' + recipeId).text(response.like_count);
       
-          
-          // Herz-Symbol ändern
-          var heartIcon = form.find('.glyphicon-heart, .glyphicon-heart-empty');
-          if (response.liked) {
-            heartIcon.removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
-          } else {
-            heartIcon.removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
-          }
-        }
-    
- 
+      // Herz-Symbol ändern
+      var heartIcon = form.find('.glyphicon-heart, .glyphicon-heart-empty');
+      if (response.liked) {
+        heartIcon.removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
+      } else {
+        heartIcon.removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
+      }
+    });
+  });
+});
 </script>
 {% endblock %}
