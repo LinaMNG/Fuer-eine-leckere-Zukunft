@@ -138,9 +138,9 @@ def complete():
 @app.route('/recipes')
 def recipes():
     recipes = []
-     return render_template('recipes.html', 
-                             recipes=recipes,
-                             current_user=current_user)
+    return render_template('recipes.html', 
+                            recipes=recipes,
+                            current_user=current_user)
 
 if __name__ == "__main__":
     app.run()
