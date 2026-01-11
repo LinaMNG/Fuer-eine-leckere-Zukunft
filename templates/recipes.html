@@ -11,50 +11,53 @@
 </div>
 
 {% if recipes %}
-  {% for row in recipes|batch(3) %}
-  <div class="row" style="margin-top: 30px;">
-    {% for recipe in row %}
-    <div class="col-md-4">
-      <div class="recipe-card">
-        <!-- Rezept Bild -->
-        {% if recipe.recipe_photo %}
-        <img src="{{ url_for('static', filename='uploads/' + recipe.recipe_photo) }}" 
-             alt="{{ recipe.recipe_name }}" class="img-responsive recipe-image">
-        {% else %}
-        <div class="recipe-placeholder">
-          <span class="glyphicon glyphicon-cutlery"></span>
-        </div>
-        {% endif %}
-        
-        <h3>{{ recipe.recipe_name }}</h3>
-        
-        <!-- Like-Button -->
-        <div class="like-section">
-          {% if current_user.is_authenticated %}
-          <form class="like-form" data-recipe-id="{{ recipe.recipe_id }}">
-            <button type="submit" class="like-btn {% if recipe.user_liked %}liked{% endif %}">
-              <span class="glyphicon glyphicon-heart{% if not recipe.user_liked %}-empty{% endif %}"></span>
-              <span class="like-count">{{ recipe.like_count }}</span>
-            </button>
-          </form>
-          {% else %}
-          <a href="{{ url_for('login') }}" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-heart-empty"></span>
-            {{ recipe.like_count }} Likes
-          </a>
-          {% endif %}
-        </div>
-        
-        <!-- Rezept Details Button -->
-        <button class="btn btn-custom-green view-recipe-btn" 
-                data-recipe-id="{{ recipe.recipe_id }}">
-          Rezept anzeigen
-        </button>
+{% for row in recipes|batch(3) %}
+<div class="row" style="margin-top: 30px;">
+  {% for recipe in row %}
+  <div class="col-md-4">
+    <div class="recipe-card">
+      <!-- Rezept Bild -->
+      {% if recipe.recipe_photo %}
+      <img src="{{ url_for('static', filename='uploads/' + recipe.recipe_photo) }}" alt="{{ recipe.recipe_name }}"
+        class="img-responsive recipe-image">
+      {% else %}
+      <div class="recipe-placeholder">
+        <span class="glyphicon glyphicon-cutlery"></span>
       </div>
+      {% endif %}
+
+      <!-- <h3>{{ recipe.recipe_name }}</h3> -->
+      <h3 style="color: red;">
+        {{ recipe.recipe_name }}
+      </h3>
+
+
+      <!-- Like-Button -->
+      <div class="like-section">
+        {% if current_user.is_authenticated %}
+        <form class="like-form" data-recipe-id="{{ recipe.recipe_id }}">
+          <button type="submit" class="like-btn {% if recipe.user_liked %}liked{% endif %}">
+            <span class="glyphicon glyphicon-heart{% if not recipe.user_liked %}-empty{% endif %}"></span>
+            <span class="like-count">{{ recipe.like_count }}</span>
+          </button>
+        </form>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-heart-empty"></span>
+          {{ recipe.like_count }} Likes
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- Rezept Details Button -->
+      <button class="btn btn-custom-green view-recipe-btn" data-recipe-id="{{ recipe.recipe_id }}">
+        Rezept anzeigen
+      </button>
     </div>
-    {% endfor %}
   </div>
   {% endfor %}
+</div>
+{% endfor %}
 {% else %}
 <div class="row">
   <div class="col-md-12 text-center">
@@ -81,124 +84,125 @@
 </div>
 
 <style>
-.recipe-card {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+  .recipe-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
 
-.recipe-image {
-  height: 200px;
-  width: 100%;
-  object-fit: cover;
-  border-radius: 5px;
-  margin-bottom: 15px;
-}
+  .recipe-image {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 15px;
+  }
 
-.recipe-placeholder {
-  height: 200px;
-  background-color: #2d6a4f;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  margin-bottom: 15px;
-}
+  .recipe-placeholder {
+    height: 200px;
+    background-color: #2d6a4f;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-bottom: 15px;
+  }
 
-.recipe-placeholder .glyphicon {
-  font-size: 64px;
-}
+  .recipe-placeholder .glyphicon {
+    font-size: 64px;
+  }
 
-.like-section {
-  margin: 15px 0;
-}
+  .like-section {
+    margin: 15px 0;
+  }
 
-.like-btn {
-  background: none;
-  border: none;
-  color: #ccc;
-  font-size: 18px;
-  padding: 5px 10px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
+  .like-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 18px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
 
-.like-btn.liked, .like-btn:hover {
-  color: #e63946;
-}
+  .like-btn.liked,
+  .like-btn:hover {
+    color: #e63946;
+  }
 
-.like-count {
-  margin-left: 5px;
-  font-size: 16px;
-}
+  .like-count {
+    margin-left: 5px;
+    font-size: 16px;
+  }
 
-.btn-custom-green {
-  background-color: #2d6a4f;
-  border-color: #2d6a4f;
-  color: white;
-  width: 100%;
-}
+  .btn-custom-green {
+    background-color: #2d6a4f;
+    border-color: #2d6a4f;
+    color: white;
+    width: 100%;
+  }
 </style>
 
 <script>
-$(document).ready(function() {
-  // AJAX für Likes
-  $('.like-form').submit(function(e) {
-    e.preventDefault();
-    
-    var form = $(this);
-    var recipeId = form.data('recipe-id');
-    var likeBtn = form.find('.like-btn');
-    var likeCount = form.find('.like-count');
-    var heartIcon = form.find('.glyphicon');
-    
-    $.ajax({
-      type: 'POST',
-      url: '/like_recipe/' + recipeId,
-      success: function(response) {
-        if (response.success) {
-          // Like-Count aktualisieren
-          likeCount.text(response.like_count);
-          
-          // Button-Status ändern
-          if (response.liked) {
-            likeBtn.addClass('liked');
-            heartIcon.removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
-          } else {
-            likeBtn.removeClass('liked');
-            heartIcon.removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
-          }
-        }
-      },
-      error: function() {
-        alert('Fehler beim Liken des Rezepts');
-      }
-    });
-  });
+  $(document).ready(function () {
+    // AJAX für Likes
+    $('.like-form').submit(function (e) {
+      e.preventDefault();
 
-  // Rezept-Details anzeigen
-  $('.view-recipe-btn').click(function() {
-    var recipeId = $(this).data('recipe-id');
-    $.ajax({
-      type: 'GET',
-      url: '/recipe/' + recipeId,
-      success: function(data) {
-        $('#recipeModalTitle').text(data.recipe_name);
-        $('#recipeModalBody').html(`
+      var form = $(this);
+      var recipeId = form.data('recipe-id');
+      var likeBtn = form.find('.like-btn');
+      var likeCount = form.find('.like-count');
+      var heartIcon = form.find('.glyphicon');
+
+      $.ajax({
+        type: 'POST',
+        url: '/like_recipe/' + recipeId,
+        success: function (response) {
+          if (response.success) {
+            // Like-Count aktualisieren
+            likeCount.text(response.like_count);
+
+            // Button-Status ändern
+            if (response.liked) {
+              likeBtn.addClass('liked');
+              heartIcon.removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
+            } else {
+              likeBtn.removeClass('liked');
+              heartIcon.removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
+            }
+          }
+        },
+        error: function () {
+          alert('Fehler beim Liken des Rezepts');
+        }
+      });
+    });
+
+    // Rezept-Details anzeigen
+    $('.view-recipe-btn').click(function () {
+      var recipeId = $(this).data('recipe-id');
+      $.ajax({
+        type: 'GET',
+        url: '/recipe/' + recipeId,
+        success: function (data) {
+          $('#recipeModalTitle').text(data.recipe_name);
+          $('#recipeModalBody').html(`
           <p><strong>Zutaten:</strong> ${data.recipes_ingredient}</p>
           <p><strong>Mengenangaben:</strong> ${data.recipe_mengenangaben}</p>
           <p><strong>Anweisungen:</strong> ${data.recipe_instruction}</p>
         `);
-        $('#recipeModal').modal('show');
-      },
-      error: function() {
-        alert('Fehler beim Laden des Rezepts');
-      }
+          $('#recipeModal').modal('show');
+        },
+        error: function () {
+          alert('Fehler beim Laden des Rezepts');
+        }
+      });
     });
   });
-});
 </script>
 {% endblock %}
