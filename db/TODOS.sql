@@ -148,8 +148,9 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
     5,
     'Milchreis',
     '1. Milch in einem schweren Topf aufkochen.\n2. Rundkornreis und eine Prise Salz unterrühren.\n3. Hitze reduzieren und bei schwacher Hitze 30-35 Minuten köcheln lassen, gelegentlich umrühren.\n4. Wenn der Reis die Milch aufgesogen hat und cremig ist, Zucker und Vanillezucker unterrühren.\n5. Vom Herd nehmen und Butter unterrühren.\n6. Zugedeckt 10 Minuten ziehen lassen.\n7. Vor dem Servieren nochmals auflockern.\n8. Mit Zimt bestreut und Apfelmus servieren.',
-
-
+    '4 Portionen'
+);
+ 
     -- Rezept 1: Hörnli-Auflauf mit Zutaten 1-9
     INSERT INTO contains (recipe_id, ingredient_id) VALUES
     (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9);
@@ -169,6 +170,3 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
     -- Rezept 5: Milchreis mit Zutaten 32-39
     INSERT INTO contains (recipe_id, ingredient_id) VALUES
     (5, 32), (5, 33), (5, 34), (5, 35), (5, 36), (5, 37), (5, 38), (5, 39);
-    '4 Portionen'
-);
- 
