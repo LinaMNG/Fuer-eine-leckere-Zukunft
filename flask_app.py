@@ -177,24 +177,19 @@ def recipes():
 def recipe_detail(recipe_id):
     recipe = db_read("SELECT * FROM recipes WHERE recipe_id=%s", (recipe_id,), single=True)
     if recipe:
-        try:
-            # Zutaten über die contains-Tabelle laden
-            ingredients = db_read(
-                """
-                SELECT i.ingredient_name
-                FROM contains c
-                JOIN ingredient i ON c.ingredient_id = i.id
-                WHERE c.recipe_id = %s
-                ORDER BY i.ingredient_name
-                """,
-                (recipe_id,)
-            )
-            recipe['ingredients'] = ingredients
-            logging.info(f"Recipe {recipe_id}: {len(ingredients)} ingredients loaded successfully")
-        except Exception as e:
-            logging.error(f"Error loading ingredients for recipe {recipe_id}: {e}")
-            recipe['ingredients'] = []
-
+        # Zutaten über die contains-Tabelle laden (nur ingredient_name)
+        #ingredients = db_read(
+        #    """
+        #    SELECT i.ingredient_name
+        #    FROM contains c
+        #    JOIN ingredient i ON c.ingredient_id = i.id
+        #    WHERE c.recipe_id = %s
+        #    ORDER BY i.ingredient_name
+        #    """,
+        #    (recipe_id,)
+        #)
+        # db_read liefert Liste von dicts mit key 'ingredient_name'
+        #recipe['ingredients'] = ingredients
         return render_template('receipe_detail.html', recipe=recipe)
     return render_template('receipe_detail.html', recipe=None, error="Rezept nicht gefunden"), 404
 
