@@ -135,7 +135,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
     '3 Portionen'
 );
 
--
+
 INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben) VALUES (
     4,
     'Rüebli Suppe',
