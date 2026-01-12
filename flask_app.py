@@ -197,8 +197,6 @@ def recipe_detail(recipe_id):
 
         return render_template('receipe_detail.html', recipe=recipe)
     return render_template('receipe_detail.html', recipe=None, error="Rezept nicht gefunden"), 404
-        return render_template('receipe_detail.html', recipe=recipe)
-    return render_template('receipe_detail.html', recipe=None, error="Rezept nicht gefunden"), 404
 
 if __name__ == "__main__":
     app.run()
