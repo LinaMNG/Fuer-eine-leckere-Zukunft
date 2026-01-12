@@ -178,20 +178,6 @@ def recipes():
 def recipe_detail(recipe_id):
     recipe = db_read("SELECT * FROM recipes WHERE recipe_id=%s", (recipe_id,), single=True)
     if recipe:
-        # Zutaten-IDs aus komma-getrenntem String extrahieren
-        ingredient_ids_str = recipe.get('recipes_ingredient', '')
-        ingredients = []
-        
-        if ingredient_ids_str:
-            # String in Liste umwandeln und bereinigen
-            ingredient_ids = [id.strip() for id in ingredient_ids_str.split(',') if id.strip()]
-            
-            if ingredient_ids:
-                # Alle Zutat-Informationen abrufen
-                placeholders = ','.join(['%s'] * len(ingredient_ids))
-                ingredients = db_read(f"SELECT * FROM ingredient WHERE id IN ({placeholders})", ingredient_ids)
-        
-        recipe['ingredients'] = ingredients
         return render_template('receipe_detail.html', recipe=recipe)
     return render_template('receipe_detail.html', recipe=None, error="Rezept nicht gefunden"), 404
 
