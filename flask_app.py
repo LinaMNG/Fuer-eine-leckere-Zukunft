@@ -172,6 +172,7 @@ def recipes():
         print(f"FEHLER in /recipes route: {e}")
         import traceback
         traceback.print_exc()
+        return render_template('recipes.html', recipes=[], current_user=current_user, error="Fehler beim Laden der Rezepte")
 
 @app.route('/recipe/<int:recipe_id>')
 def recipe_detail(recipe_id):
