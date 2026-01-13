@@ -51,7 +51,6 @@ CREATE TABLE contains (
     FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
     FOREIGN KEY (ingredient_id) REFERENCES ingredient(id),
     UNIQUE KEY unique_recipe_ingredient (recipe_id, ingredient_id)
-
 );
 
 
@@ -151,8 +150,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
     '4 Portionen'
 );
  
- /*
-    -- Rezept 1: Hörnli-Auflauf mit Zutaten 1-9
+     -- Rezept 1: Hörnli-Auflauf mit Zutaten 1-9
     INSERT INTO contains (recipe_id, ingredient_id) VALUES
     (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9);
 
@@ -171,5 +169,3 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
     -- Rezept 5: Milchreis mit Zutaten 32-39
     INSERT INTO contains (recipe_id, ingredient_id) VALUES
     (5, 32), (5, 33), (5, 34), (5, 35), (5, 36), (5, 37), (5, 38), (5, 39);
-
-    */

@@ -50,7 +50,7 @@ def webhook():
 @app.get('/users')
 @login_required
 def users():
-    return'Hello from users'
+    return 'Hello from users'
     
 @app.route("/login", methods=["GET", "POST"])
 def login():
