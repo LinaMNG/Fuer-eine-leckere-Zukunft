@@ -18,7 +18,7 @@
     <div class="recipe-card">
       <!-- Rezept Bild -->
       {% if recipe.recipe_photo %}
-      <img src="{{ url_for('static', filename='uploads/' + recipe.recipe_photo) }}" alt="{{ recipe.recipe_name }}"
+      <img src="{{ recipe.recipe_photo }}" alt="{{ recipe.recipe_name }}"
         class="img-responsive recipe-image">
       {% else %}
       <div class="recipe-placeholder">
