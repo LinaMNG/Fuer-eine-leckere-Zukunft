@@ -195,6 +195,45 @@ def recipes():
         import traceback
         traceback.print_exc()
         return render_template('recipes.html', recipes=[], current_user=current_user, error="Fehler beim Laden der Rezepte")
+
+@app.route('/liked_recipes')
+@login_required
+def liked_recipes():
+    try:
+        # Fetch recipes that the current user has liked
+        recipes = db_read("""
+            SELECT 
+                r.recipe_id,
+                r.recipe_name,
+                r.recipe_photo,
+                r.recipe_instruction,
+                r.recipe_mengenangaben,
+                COALESCE(l.like_count, 0) as like_count
+            FROM recipes r
+            INNER JOIN liked ul ON r.recipe_id = ul.recipe_id
+            LEFT JOIN (
+                SELECT recipe_id, COUNT(*) as like_count 
+                FROM liked 
+                GROUP BY recipe_id
+            ) l ON r.recipe_id = l.recipe_id
+            WHERE ul.user_id = %s
+            ORDER BY r.recipe_id
+        """, (current_user.id,))
+        
+        # Add user_liked status for each recipe (they're all liked since we fetched only liked ones)
+        for recipe in recipes:
+            recipe['user_liked'] = True
+        
+        return render_template(
+            'likedrecipes.html', 
+            recipes=recipes,
+            current_user=current_user
+        )
+    except Exception as e:
+        print(f"FEHLER in /liked_recipes route: {e}")
+        import traceback
+        traceback.print_exc()
+        return render_template('likedrecipes.html', recipes=[], current_user=current_user, error="Fehler beim Laden der Lieblingsrezepte")
         
 @app.route('/recipe/<int:recipe_id>')
 def recipe_detail(recipe_id):
