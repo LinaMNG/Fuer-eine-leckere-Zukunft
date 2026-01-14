@@ -150,30 +150,41 @@ def like_recipe(recipe_id):
 @app.route('/recipes')
 def recipes():
     try:
+        # Fetch recipes with their like counts
         recipes = db_read("""
             SELECT 
-                recipe_id,
-                recipe_name,
-                recipe_photo,
-                recipe_instruction,
-                recipe_mengenangaben
-            FROM recipes 
-            ORDER BY recipe_id
+                r.recipe_id,
+                r.recipe_name,
+                r.recipe_photo,
+                r.recipe_instruction,
+                r.recipe_mengenangaben,
+                COALESCE(l.like_count, 0) as like_count
+            FROM recipes r
+            LEFT JOIN (
+                SELECT recipe_id, COUNT(*) as like_count 
+                FROM liked 
+                GROUP BY recipe_id
+            ) l ON r.recipe_id = l.recipe_id
+            ORDER BY r.recipe_id
         """)
-
+        
         # Add user_liked status for each recipe if user is authenticated
         if current_user.is_authenticated:
+            # Get all recipe IDs that the current user has liked
+            liked_recipe_ids = db_read(
+                "SELECT recipe_id FROM liked WHERE user_id = %s",
+                (current_user.id,)
+            )
+            # Convert to a set for fast lookup
+            liked_set = {item['recipe_id'] for item in liked_recipe_ids}
+            
+            # Add user_liked flag to each recipe
             for recipe in recipes:
-                user_like = db_read(
-                    "SELECT id FROM liked WHERE user_id = %s AND recipe_id = %s",
-                    (current_user.id, recipe['recipe_id']),
-                    single=True
-                )
-                recipe['user_liked'] = user_like is not None
+                recipe['user_liked'] = recipe['recipe_id'] in liked_set
         else:
             for recipe in recipes:
                 recipe['user_liked'] = False
-
+        
         return render_template(
             'recipes.html', 
             recipes=recipes,
@@ -184,7 +195,7 @@ def recipes():
         import traceback
         traceback.print_exc()
         return render_template('recipes.html', recipes=[], current_user=current_user, error="Fehler beim Laden der Rezepte")
-
+        
 @app.route('/recipe/<int:recipe_id>')
 def recipe_detail(recipe_id):
     recipe = db_read("SELECT * FROM recipes WHERE recipe_id=%s", (recipe_id,), single=True)
