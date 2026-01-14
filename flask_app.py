@@ -161,6 +161,19 @@ def recipes():
             ORDER BY recipe_id
         """)
 
+        # Add user_liked status for each recipe if user is authenticated
+        if current_user.is_authenticated:
+            for recipe in recipes:
+                user_like = db_read(
+                    "SELECT id FROM liked WHERE user_id = %s AND recipe_id = %s",
+                    (current_user.id, recipe['recipe_id']),
+                    single=True
+                )
+                recipe['user_liked'] = user_like is not None
+        else:
+            for recipe in recipes:
+                recipe['user_liked'] = False
+
         return render_template(
             'recipes.html', 
             recipes=recipes,
