@@ -5,7 +5,15 @@
 {% block content %}
 <div class="row">
   <div class="col-md-12">
-    <h1>Rezepte</h1>
+    <!--h1>Rezepte</h1-->
+    <h1>
+      {% if search_ingredient %}
+        Rezepte mit {{ search_ingredient }}
+      {% else %}
+        Rezepte
+      {% endif %}
+    </h1>
+
     <p class="lead">Entdecke unsere leckeren Rezepte!</p>
   </div>
 </div>
@@ -62,7 +70,11 @@
 <div class="row">
   <div class="col-md-12 text-center">
     <div class="alert alert-info">
-      Noch keine Rezepte vorhanden.
+      {% if search_ingredient %}
+        {{ search_ingredient }} in keinem Rezept gefunden
+      {% else %}
+        Keine Rezepte gefunden.
+      {% endif %}
     </div>
   </div>
 </div>
