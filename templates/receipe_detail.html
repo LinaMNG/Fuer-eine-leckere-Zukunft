@@ -14,7 +14,7 @@
     {% if recipe %}
       <!-- Rezept Bild -->
       {% if recipe.recipe_photo %}
-        <img src="{{ url_for('static', filename='uploads/' + recipe.recipe_photo) }}" 
+        <img src="{{ recipe.recipe_photo }}" 
              alt="{{ recipe.recipe_name }}" 
              class="img-responsive recipe-detail-image">
       {% else %}
