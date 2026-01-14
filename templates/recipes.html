@@ -35,7 +35,7 @@
       <!-- Like-Button -->
       <div class="like-section">
         {% if current_user.is_authenticated %}
-        <form class="like-form" data-recipe-id="{{ recipe.recipe_id }}">
+        <form class="like-form" action="{{ url_for('like_recipe', recipe_id=recipe.recipe_id) }}" method="POST">
           <button type="submit" class="like-btn {% if recipe.user_liked %}liked{% endif %}">
             <span class="glyphicon glyphicon-heart{% if not recipe.user_liked %}-empty{% endif %}"></span>
             <span class="like-count">{{ recipe.like_count }}</span>

@@ -145,9 +145,7 @@ def like_recipe(recipe_id):
     else:
         db_write("INSERT INTO liked (user_id, recipe_id) VALUES (%s, %s)", (current_user.id, recipe_id))
         liked = True
-    like_count_result = db_read("SELECT COUNT(*) as count FROM liked WHERE recipe_id = %s", (recipe_id,))
-    like_count = like_count_result[0]['count']
-    return jsonify({'liked': liked, 'like_count': like_count})
+    return redirect(request.referrer or url_for('index'))
 
 @app.route('/recipes')
 def recipes():
