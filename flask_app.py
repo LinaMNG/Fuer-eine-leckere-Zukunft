@@ -145,7 +145,7 @@ def like_recipe(recipe_id):
     else:
         db_write("INSERT INTO liked (user_id, recipe_id) VALUES (%s, %s)", (current_user.id, recipe_id))
         liked = True
-    return redirect(url_for('recipes'), code=303)
+    return redirect('/recipes', code=303)
 
 @app.route('/recipes')
 def recipes():
