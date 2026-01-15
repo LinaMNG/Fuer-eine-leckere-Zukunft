@@ -259,60 +259,78 @@ def recipe_detail(recipe_id):
 @app.route('/search')
 def search_recipes():
     ingredient = request.args.get('ingredient', '').strip()
+    diets = request.args.getlist('diet')  # <-- Checkboxen
 
     if not ingredient:
         return redirect(url_for('recipes'))
 
-    try:
-        recipes = db_read("""
-            SELECT DISTINCT
-                r.recipe_id,
-                r.recipe_name,
-                r.recipe_photo,
-                r.recipe_instruction,
-                r.recipe_mengenangaben,
-                COALESCE(l.like_count, 0) AS like_count
-            FROM recipes r
-            JOIN contains c ON r.recipe_id = c.recipe_id
-            JOIN ingredient i ON c.ingredient_id = i.id
-            LEFT JOIN (
-                SELECT recipe_id, COUNT(*) AS like_count
-                FROM liked
-                GROUP BY recipe_id
-            ) l ON r.recipe_id = l.recipe_id
-            WHERE LOWER(i.ingredient_name) = LOWER(%s)
-            ORDER BY r.recipe_id
-        """, (ingredient,))
+    # Dynamische Filter
+    conditions = []
+    params = [ingredient]
 
-        # user_liked setzen (gleich wie /recipes)
-        if current_user.is_authenticated:
-            liked_ids = db_read(
-                "SELECT recipe_id FROM liked WHERE user_id = %s",
-                (current_user.id,)
-            )
-            liked_set = {x["recipe_id"] for x in liked_ids}
+    if 'vegetarisch' in diets:
+        conditions.append("i.vegetarisch = TRUE")
+    if 'vegan' in diets:
+        conditions.append("i.vegan = TRUE")
+    if 'laktosefrei' in diets:
+        conditions.append("i.laktose = TRUE")
+    if 'glutenfrei' in diets:
+        conditions.append("i.ingredient_glutenfrei = TRUE")
 
-            for r in recipes:
-                r["user_liked"] = r["recipe_id"] in liked_set
-        else:
-            for r in recipes:
-                r["user_liked"] = False
+    condition_sql = ""
+    if conditions:
+        condition_sql = "AND " + " AND ".join(conditions)
 
-        return render_template(
-            "recipes.html",
-            recipes=recipes,
-            current_user=current_user,
-            search_ingredient=ingredient
+    query = f"""
+        SELECT
+            r.recipe_id,
+            r.recipe_name,
+            r.recipe_photo,
+            r.recipe_instruction,
+            r.recipe_mengenangaben,
+            COALESCE(l.like_count, 0) AS like_count
+        FROM recipes r
+        JOIN contains c ON r.recipe_id = c.recipe_id
+        JOIN ingredient i ON c.ingredient_id = i.id
+        LEFT JOIN (
+            SELECT recipe_id, COUNT(*) AS like_count
+            FROM liked
+            GROUP BY recipe_id
+        ) l ON r.recipe_id = l.recipe_id
+        WHERE r.recipe_id IN (
+            SELECT r2.recipe_id
+            FROM recipes r2
+            JOIN contains c2 ON r2.recipe_id = c2.recipe_id
+            JOIN ingredient i2 ON c2.ingredient_id = i2.id
+            GROUP BY r2.recipe_id
+            HAVING
+                SUM(CASE WHEN LOWER(i2.ingredient_name) = LOWER(%s) THEN 1 ELSE 0 END) > 0
+                {condition_sql}
         )
+        ORDER BY r.recipe_id
+    """
 
-    except Exception as e:
-        print("FEHLER in /search:", e)
-        return render_template(
-            "recipes.html",
-            recipes=[],
-            current_user=current_user,
-            search_ingredient=ingredient
+    recipes = db_read(query, params)
+
+    # user_liked setzen
+    if current_user.is_authenticated:
+        liked_ids = db_read(
+            "SELECT recipe_id FROM liked WHERE user_id = %s",
+            (current_user.id,)
         )
+        liked_set = {x["recipe_id"] for x in liked_ids}
+        for r in recipes:
+            r["user_liked"] = r["recipe_id"] in liked_set
+    else:
+        for r in recipes:
+            r["user_liked"] = False
+
+    return render_template(
+        "recipes.html",
+        recipes=recipes,
+        current_user=current_user,
+        search_ingredient=ingredient
+    )
 
 
 if __name__ == "__main__":
