@@ -259,30 +259,29 @@ def recipe_detail(recipe_id):
 @app.route('/search')
 def search_recipes():
     ingredient = request.args.get('ingredient', '').strip()
-    diets = request.args.getlist('diet')  # <-- Checkboxen
+    diets = request.args.getlist('diet')  # checkboxen
 
     if not ingredient:
         return redirect(url_for('recipes'))
 
-    # Dynamische Filter
-    conditions = []
-    params = [ingredient]
-
+    # Dynamische Bedingungen für HAVING
+    having_conditions = []
     if 'vegetarisch' in diets:
-        conditions.append("i.vegetarisch = TRUE")
+        having_conditions.append("SUM(CASE WHEN i2.vegetarisch = FALSE THEN 1 ELSE 0 END) = 0")
     if 'vegan' in diets:
-        conditions.append("i.vegan = TRUE")
+        having_conditions.append("SUM(CASE WHEN i2.vegan = FALSE THEN 1 ELSE 0 END) = 0")
     if 'laktosefrei' in diets:
-        conditions.append("i.laktose = TRUE")
+        having_conditions.append("SUM(CASE WHEN i2.laktose = FALSE THEN 1 ELSE 0 END) = 0")
     if 'glutenfrei' in diets:
-        conditions.append("i.ingredient_glutenfrei = TRUE")
+        having_conditions.append("SUM(CASE WHEN i2.ingredient_glutenfrei = FALSE THEN 1 ELSE 0 END) = 0")
 
-    condition_sql = ""
-    if conditions:
-        condition_sql = "AND " + " AND ".join(conditions)
+    having_sql = ""
+    if having_conditions:
+        having_sql = " AND " + " AND ".join(having_conditions)
 
+    # SQL: nur Rezepte, die die gesuchte Zutat enthalten und keine Zutat die Bedingungen verletzt
     query = f"""
-        SELECT
+        SELECT 
             r.recipe_id,
             r.recipe_name,
             r.recipe_photo,
@@ -290,27 +289,24 @@ def search_recipes():
             r.recipe_mengenangaben,
             COALESCE(l.like_count, 0) AS like_count
         FROM recipes r
-        JOIN contains c ON r.recipe_id = c.recipe_id
-        JOIN ingredient i ON c.ingredient_id = i.id
         LEFT JOIN (
             SELECT recipe_id, COUNT(*) AS like_count
             FROM liked
             GROUP BY recipe_id
         ) l ON r.recipe_id = l.recipe_id
         WHERE r.recipe_id IN (
-            SELECT r2.recipe_id
-            FROM recipes r2
-            JOIN contains c2 ON r2.recipe_id = c2.recipe_id
+            SELECT c2.recipe_id
+            FROM contains c2
             JOIN ingredient i2 ON c2.ingredient_id = i2.id
-            GROUP BY r2.recipe_id
+            GROUP BY c2.recipe_id
             HAVING
                 SUM(CASE WHEN LOWER(i2.ingredient_name) = LOWER(%s) THEN 1 ELSE 0 END) > 0
-                {condition_sql}
+                {having_sql}
         )
         ORDER BY r.recipe_id
     """
 
-    recipes = db_read(query, params)
+    recipes = db_read(query, (ingredient,))
 
     # user_liked setzen
     if current_user.is_authenticated:
