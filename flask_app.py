@@ -195,6 +195,45 @@ def recipes():
         import traceback
         traceback.print_exc()
         return render_template('recipes.html', recipes=[], current_user=current_user, error="Fehler beim Laden der Rezepte")
+
+@app.route('/liked_recipes')
+@login_required
+def liked_recipes():
+    try:
+        # Fetch recipes that the current user has liked
+        recipes = db_read("""
+            SELECT 
+                r.recipe_id,
+                r.recipe_name,
+                r.recipe_photo,
+                r.recipe_instruction,
+                r.recipe_mengenangaben,
+                COALESCE(l.like_count, 0) as like_count
+            FROM recipes r
+            INNER JOIN liked ul ON r.recipe_id = ul.recipe_id
+            LEFT JOIN (
+                SELECT recipe_id, COUNT(*) as like_count 
+                FROM liked 
+                GROUP BY recipe_id
+            ) l ON r.recipe_id = l.recipe_id
+            WHERE ul.user_id = %s
+            ORDER BY r.recipe_id
+        """, (current_user.id,))
+        
+        # Add user_liked status for each recipe (they're all liked since we fetched only liked ones)
+        for recipe in recipes:
+            recipe['user_liked'] = True
+        
+        return render_template(
+            'likedrecipes.html', 
+            recipes=recipes,
+            current_user=current_user
+        )
+    except Exception as e:
+        print(f"FEHLER in /liked_recipes route: {e}")
+        import traceback
+        traceback.print_exc()
+        return render_template('likedrecipes.html', recipes=[], current_user=current_user, error="Fehler beim Laden der Lieblingsrezepte")
         
 @app.route('/recipe/<int:recipe_id>')
 def recipe_detail(recipe_id):
@@ -215,6 +254,80 @@ def recipe_detail(recipe_id):
         recipe['ingredients'] = ingredients
         return render_template('receipe_detail.html', recipe=recipe)
     return render_template('receipe_detail.html', recipe=None, error="Rezept nicht gefunden"), 404
+
+
+@app.route('/search')
+def search_recipes():
+    ingredient = request.args.get('ingredient', '').strip()
+    diets = request.args.getlist('diet')  # checkboxen
+
+    if not ingredient:
+        return redirect(url_for('recipes'))
+
+    # Dynamische Bedingungen für HAVING
+    having_conditions = []
+    if 'vegetarisch' in diets:
+        having_conditions.append("SUM(CASE WHEN i2.vegetarisch = FALSE THEN 1 ELSE 0 END) = 0")
+    if 'vegan' in diets:
+        having_conditions.append("SUM(CASE WHEN i2.vegan = FALSE THEN 1 ELSE 0 END) = 0")
+    if 'laktosefrei' in diets:
+        having_conditions.append("SUM(CASE WHEN i2.laktose = FALSE THEN 1 ELSE 0 END) = 0")
+    if 'glutenfrei' in diets:
+        having_conditions.append("SUM(CASE WHEN i2.ingredient_glutenfrei = FALSE THEN 1 ELSE 0 END) = 0")
+
+    having_sql = ""
+    if having_conditions:
+        having_sql = " AND " + " AND ".join(having_conditions)
+
+    # SQL: nur Rezepte, die die gesuchte Zutat enthalten und keine Zutat die Bedingungen verletzt
+    query = f"""
+        SELECT 
+            r.recipe_id,
+            r.recipe_name,
+            r.recipe_photo,
+            r.recipe_instruction,
+            r.recipe_mengenangaben,
+            COALESCE(l.like_count, 0) AS like_count
+        FROM recipes r
+        LEFT JOIN (
+            SELECT recipe_id, COUNT(*) AS like_count
+            FROM liked
+            GROUP BY recipe_id
+        ) l ON r.recipe_id = l.recipe_id
+        WHERE r.recipe_id IN (
+            SELECT c2.recipe_id
+            FROM contains c2
+            JOIN ingredient i2 ON c2.ingredient_id = i2.id
+            GROUP BY c2.recipe_id
+            HAVING
+                SUM(CASE WHEN LOWER(i2.ingredient_name) = LOWER(%s) THEN 1 ELSE 0 END) > 0
+                {having_sql}
+        )
+        ORDER BY r.recipe_id
+    """
+
+    recipes = db_read(query, (ingredient,))
+
+    # user_liked setzen
+    if current_user.is_authenticated:
+        liked_ids = db_read(
+            "SELECT recipe_id FROM liked WHERE user_id = %s",
+            (current_user.id,)
+        )
+        liked_set = {x["recipe_id"] for x in liked_ids}
+        for r in recipes:
+            r["user_liked"] = r["recipe_id"] in liked_set
+    else:
+        for r in recipes:
+            r["user_liked"] = False
+
+    return render_template(
+        "recipes.html",
+        recipes=recipes,
+        current_user=current_user,
+        search_ingredient=ingredient
+    )
+
 
 if __name__ == "__main__":
     app.run()

@@ -7,7 +7,7 @@
     margin: 50px auto;
   }
   .auth-card {
-    background: #ffffff;
+    background: #2E6E4D;
     padding: 30px 30px 25px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
@@ -23,6 +23,7 @@
     font-size: 13px;
     margin-top: 15px;
     text-align: center;
+    color: #ffffff;
   }
   .auth-footer-text a { font-weight: 600; }
 </style>
@@ -30,7 +31,7 @@
 <div class="auth-wrapper">
   <div class="auth-card">
 
-    <h1 class="auth-title">{{ title }}</h1>
+    <h1 style="color: #ffffff;" class="auth-title">{{ title }}</h1>
 
     {% if error %}
       <p class="error">{{ error }}</p>

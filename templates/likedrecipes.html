@@ -1,20 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Rezepte - Für eine leckere Zukunft{% endblock %}
+{% block title %}Lieblingsrezepte - Für eine leckere Zukunft{% endblock %}
 
 {% block content %}
 <div class="row">
   <div class="col-md-12">
-    <!--h1>Rezepte</h1-->
-    <h1>
-      {% if search_ingredient %}
-        Rezepte mit {{ search_ingredient }}
-      {% else %}
-        Rezepte
-      {% endif %}
-    </h1>
-
-    <p class="lead">Entdecke unsere leckeren Rezepte!</p>
+    <h1>Meine Lieblingsrezepte</h1>
+    <p class="lead">Deine persönlichen Lieblingsrezepte!</p>
   </div>
 </div>
 
@@ -70,11 +62,7 @@
 <div class="row">
   <div class="col-md-12 text-center">
     <div class="alert alert-info">
-      {% if search_ingredient %}
-        {{ search_ingredient }} in keinem Rezept gefunden
-      {% else %}
-        Keine Rezepte gefunden.
-      {% endif %}
+      Du hast noch keine Lieblingsrezepte. <a href="{{ url_for('recipes') }}">Schau dir die Rezepte an!</a>
     </div>
   </div>
 </div>
@@ -161,28 +149,25 @@
 
       $.ajax({
         type: 'POST',
-        url: '/like_recipe/' + recipeId,
-        success: function (response) {
-          if (response.success) {
-            // Like-Count aktualisieren
-            likeCount.text(response.like_count);
-
-            // Button-Status ändern
-            if (response.liked) {
-              likeBtn.addClass('liked');
-              heartIcon.removeClass('glyphicon-heart-empty').addClass('glyphicon-heart');
-            } else {
-              likeBtn.removeClass('liked');
-              heartIcon.removeClass('glyphicon-heart').addClass('glyphicon-heart-empty');
-            }
+        url: form.attr('action'),
+        success: function (data) {
+          if (likeBtn.hasClass('liked')) {
+            likeBtn.removeClass('liked');
+            heartIcon.removeClass('glyphicon-heart');
+            heartIcon.addClass('glyphicon-heart-empty');
+            likeCount.text(parseInt(likeCount.text()) - 1);
+          } else {
+            likeBtn.addClass('liked');
+            heartIcon.removeClass('glyphicon-heart-empty');
+            heartIcon.addClass('glyphicon-heart');
+            likeCount.text(parseInt(likeCount.text()) + 1);
           }
         },
         error: function () {
-          alert('Fehler beim Liken des Rezepts');
+          alert('Fehler beim Speichern des Likes');
         }
       });
     });
   });
 </script>
-
 {% endblock %}
