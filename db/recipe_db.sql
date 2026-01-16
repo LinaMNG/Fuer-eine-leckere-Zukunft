@@ -19,7 +19,7 @@ CREATE TABLE recipes (
   recipe_name VARCHAR(100),
   recipe_photo VARCHAR(200),
   recipe_instruction VARCHAR(4000),
-  recipe_portionen VARCHAR(15)
+  recipe_mengenangaben VARCHAR(15)
 );
 
 
@@ -110,7 +110,7 @@ INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingred
 
 
 
-INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_portionen, recipe_photo) VALUES (
+INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipe_photo) VALUES (
     1,
     'Hörnli-Auflauf',
     '1. Ofen auf 200°C vorheizen.\n2. Hörnli nach Packungsanleitung al dente kochen.\n3. Währenddessen Schinken in kleine Würfel schneiden.\n4. Käse fein reiben.\n5. Eier mit Milch, Salz, Pfeffer und Muskatnuss verquirlen.\n6. Abgetropfte Hörnli mit Schinken und der Hälfte des Käses vermischen.\n7. In eine gefettete Auflaufform geben.\n8. Eiermilch darüber giessen.\n9. Mit restlichem Käse bestreuen.\n10. Im vorgeheizten Ofen 25-30 Minuten backen bis goldbraun und stockt.',
@@ -119,7 +119,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_portione
 );
 
 
-INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_portionen, recipe_photo) VALUES (
+INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipe_photo) VALUES (
     2,
     'Bananen Pancakes',
     '1. Bananen mit einer Gabel zu einem Mus zerdrücken.\n2. Eier hinzufügen und gut verrühren.\n3. Mehl, Backpulver und Zimt unterrühren.\n4. Milch nach und nach hinzufügen, bis ein glatter, dickflüssiger Teig entsteht.\n5. Etwas Öl in einer beschichteten Pfanne erhitzen.\n6. Pro Pancake 1-2 Esslöffel Teig in die Pfanne geben.\n7. Bei mittlerer Hitze backen, bis sich Blasen auf der Oberfläche bilden.\n8. Wenden und von der anderen Seite goldbraun backen.\n9. Warm mit Ahornsirup servieren.',
@@ -128,7 +128,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_portione
 );
 
 
-INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_portionen, recipe_photo) VALUES (
+INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipe_photo) VALUES (
     3,
     'Rösti',
     '1. Kartoffeln schälen und grob reiben.\n2. Die geriebenen Kartoffeln in einem Küchentuch kräftig ausdrücken, um möglichst viel Feuchtigkeit zu entfernen.\n3. Zwiebel fein hacken und mit den Kartoffeln vermischen.\n4. Salz und Pfeffer hinzufügen.\n5. Butter oder Öl in einer Pfanne erhitzen.\n6. Kartoffelmasse in die heisse Pfanne geben und gleichmässig flach drücken.\n7. Bei mittlerer Hitze 10-12 Minuten braten, bis die Unterseite goldbraun ist.\n8. Rösti auf einen Teller stürzen, zurück in die Pfanne gleiten lassen und weitere 10-12 Minuten braten.\n9. Direkt servieren.',
@@ -137,7 +137,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_portione
 );
 
 
-INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_portionen, recipe_photo) VALUES (
+INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipe_photo) VALUES (
     4,
     'Rüebli Suppe',
     '1. Zwiebel und Knoblauch fein hacken.\n2. Karotten schälen und in Scheiben schneiden.\n3. In einem grossen Topf Butter schmelzen.\n4. Zwiebel und Knoblauch glasig dünsten.\n5. Karotten hinzufügen und 5 Minuten mitdünsten.\n6. Mit Gemüsebrühe ablöschen.\n7. 20-25 Minuten köcheln lassen, bis die Karotten weich sind.\n8. Vom Herd nehmen und mit einem Stabmixer fein pürieren.\n9. Sahne einrühren und mit Salz, Pfeffer und frischem Ingwer abschmecken.\n10. Nochmals kurz erwärmen, nicht mehr kochen lassen.',
