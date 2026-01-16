@@ -5,13 +5,7 @@ CREATE TABLE users (
 );
 
 
-CREATE TABLE todos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    content VARCHAR(100),
-    due DATETIME,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
+
 
 
 CREATE TABLE recipes (
@@ -43,16 +37,17 @@ CREATE TABLE liked (
     UNIQUE KEY unique_like (user_id, recipe_id)
 );
 
+
+
 CREATE TABLE contains (
     id INT AUTO_INCREMENT PRIMARY KEY,
     recipe_id INT NOT NULL,
     ingredient_id INT NOT NULL,
+    menge VARCHAR(50),
     FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
     FOREIGN KEY (ingredient_id) REFERENCES ingredient(id),
     UNIQUE KEY unique_recipe_ingredient (recipe_id, ingredient_id)
 );
-
-
 
 INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingredient_glutenfrei) VALUES
 (1, 'Hörnli', TRUE, TRUE, TRUE, FALSE),
@@ -154,22 +149,57 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
   'https://www.gutekueche.at/storage/media/recipe/102012/conv/einfacher-milchreis-default.jpg'
 );
  
-     -- Rezept 1: Hörnli-Auflauf mit Zutaten 1-9
-    INSERT INTO contains (recipe_id, ingredient_id) VALUES
-    (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9);
+    
 
-    -- Rezept 2: Bananen Pancakes mit Zutaten 10-17
-    INSERT INTO contains (recipe_id, ingredient_id) VALUES
-    (2, 10), (2, 11), (2, 12), (2, 13), (2, 14), (2, 15), (2, 16), (2, 17);
+INSERT INTO contains (recipe_id, ingredient_id, menge) VALUES
+(1,1,'400 g'),
+(1,2,'200 g'),
+(1,3,'150 g'),
+(1,4,'3 Stück'),
+(1,5,'300 ml'),
+(1,6,'30 g'),
+(1,7,'1 TL'),
+(1,8,'½ TL'),
+(1,9,'½ TL');
 
-    -- Rezept 3: Rösti mit Zutaten 18-22
-    INSERT INTO contains (recipe_id, ingredient_id) VALUES
-    (3, 18), (3, 19), (3, 20), (3, 21), (3, 22);
+-- Rezept 2: Bananen Pancakes (2 Portionen)
+INSERT INTO contains VALUES
+(NULL,2,10,'2 Stück'),
+(NULL,2,11,'2 Stück'),
+(NULL,2,12,'120 g'),
+(NULL,2,13,'1 TL'),
+(NULL,2,14,'½ TL'),
+(NULL,2,15,'100 ml'),
+(NULL,2,16,'2 EL'),
+(NULL,2,17,'1 EL');
 
-    -- Rezept 4: Rüebli Suppe mit Zutaten 23-31
-    INSERT INTO contains (recipe_id, ingredient_id) VALUES
-    (4, 23), (4, 24), (4, 25), (4, 26), (4, 27), (4, 28), (4, 29), (4, 30), (4, 31);
+-- Rezept 3: Rösti (3 Portionen)
+INSERT INTO contains VALUES
+(NULL,3,18,'600 g'),
+(NULL,3,19,'1 Stück'),
+(NULL,3,20,'2 EL'),
+(NULL,3,21,'1 TL'),
+(NULL,3,22,'½ TL');
 
-    -- Rezept 5: Milchreis mit Zutaten 32-39
-    INSERT INTO contains (recipe_id, ingredient_id) VALUES
-    (5, 32), (5, 33), (5, 34), (5, 35), (5, 36), (5, 37), (5, 38), (5, 39);
+-- Rezept 4: Rüebli Suppe (4 Portionen)
+INSERT INTO contains VALUES
+(NULL,4,23,'600 g'),
+(NULL,4,24,'1 Stück'),
+(NULL,4,25,'1 Zehe'),
+(NULL,4,26,'30 g'),
+(NULL,4,27,'1 l'),
+(NULL,4,28,'100 ml'),
+(NULL,4,29,'1 TL'),
+(NULL,4,30,'1 TL'),
+(NULL,4,31,'½ TL');
+
+-- Rezept 5: Milchreis (4 Portionen)
+INSERT INTO contains VALUES
+(NULL,5,32,'250 g'),
+(NULL,5,33,'1 l'),
+(NULL,5,34,'50 g'),
+(NULL,5,35,'1 Päckchen'),
+(NULL,5,36,'1 TL'),
+(NULL,5,37,'20 g'),
+(NULL,5,38,'1 Prise'),
+(NULL,5,39,'200 g');
