@@ -157,7 +157,7 @@ def recipes():
                 r.recipe_name,
                 r.recipe_photo,
                 r.recipe_instruction,
-                r.recipe_mengenangaben,
+                r.recipe_portionen,
                 COALESCE(l.like_count, 0) as like_count
             FROM recipes r
             LEFT JOIN (
@@ -207,7 +207,7 @@ def liked_recipes():
                 r.recipe_name,
                 r.recipe_photo,
                 r.recipe_instruction,
-                r.recipe_mengenangaben,
+                r.recipe_portionen,
                 COALESCE(l.like_count, 0) as like_count
             FROM recipes r
             INNER JOIN liked ul ON r.recipe_id = ul.recipe_id
@@ -286,7 +286,7 @@ def search_recipes():
             r.recipe_name,
             r.recipe_photo,
             r.recipe_instruction,
-            r.recipe_mengenangaben,
+            r.recipe_portionen,
             COALESCE(l.like_count, 0) AS like_count
         FROM recipes r
         LEFT JOIN (
