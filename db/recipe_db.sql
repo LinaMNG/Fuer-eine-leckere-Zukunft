@@ -49,6 +49,8 @@ CREATE TABLE contains (
     UNIQUE KEY unique_recipe_ingredient (recipe_id, ingredient_id)
 );
 
+!-- Werte der verschidenen Rezepte, in diesem Fall von den ZUtaten -->
+
 INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingredient_glutenfrei) VALUES
 (1, 'Hörnli', TRUE, TRUE, TRUE, FALSE),
 (2, 'Käse (gerieben)', TRUE, FALSE, FALSE, TRUE),
@@ -103,6 +105,7 @@ INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingred
 (39, 'Apfelmus', TRUE, TRUE, TRUE, TRUE);
 
 
+!-- Daten von den Rezepten(in rezept db) einfügen inkl. welches Rezept welches Bld hat-->
 
 
 INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipe_photo) VALUES (
@@ -150,6 +153,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_portione
 );
  
     
+!-- Werte in Contains db einfügen -->
 
 INSERT INTO contains (recipe_id, ingredient_id, menge) VALUES
 (1,1,'400 g'),
