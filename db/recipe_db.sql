@@ -6,8 +6,6 @@ CREATE TABLE users (
 
 
 
-
-
 CREATE TABLE recipes (
   recipe_id INT AUTO_INCREMENT PRIMARY KEY,
   recipe_name VARCHAR(100),
@@ -49,7 +47,6 @@ CREATE TABLE contains (
     UNIQUE KEY unique_recipe_ingredient (recipe_id, ingredient_id)
 );
 
-!-- Werte der verschidenen Rezepte, in diesem Fall von den ZUtaten -->
 
 INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingredient_glutenfrei) VALUES
 (1, 'Hörnli', TRUE, TRUE, TRUE, FALSE),
@@ -105,8 +102,6 @@ INSERT INTO ingredient (id, ingredient_name, vegetarisch, vegan, laktose, ingred
 (39, 'Apfelmus', TRUE, TRUE, TRUE, TRUE);
 
 
-!-- Daten von den Rezepten(in rezept db) einfügen inkl. welches Rezept welches Bld hat-->
-
 
 INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipe_photo) VALUES (
     1,
@@ -153,7 +148,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
 );
  
     
-!-- Werte in Contains db einfügen -->
+
 
 INSERT INTO contains (recipe_id, ingredient_id, menge) VALUES
 (1,1,'400 g'),
@@ -167,43 +162,43 @@ INSERT INTO contains (recipe_id, ingredient_id, menge) VALUES
 (1,9,'½ TL');
 
 -- Rezept 2: Bananen Pancakes (2 Portionen)
-INSERT INTO contains VALUES
-(NULL,2,10,'2 Stück'),
-(NULL,2,11,'2 Stück'),
-(NULL,2,12,'120 g'),
-(NULL,2,13,'1 TL'),
-(NULL,2,14,'½ TL'),
-(NULL,2,15,'100 ml'),
-(NULL,2,16,'2 EL'),
-(NULL,2,17,'1 EL');
+INSERT INTO contains (recipe_id, ingredient_id, menge) VALUES
+(2,10,'2 Stück'),
+(2,11,'2 Stück'),
+(2,12,'120 g'),
+(2,13,'1 TL'),
+(2,14,'½ TL'),
+(2,15,'100 ml'),
+(2,16,'2 EL'),
+(2,17,'1 EL');
 
 -- Rezept 3: Rösti (3 Portionen)
-INSERT INTO contains VALUES
-(NULL,3,18,'600 g'),
-(NULL,3,19,'1 Stück'),
-(NULL,3,20,'2 EL'),
-(NULL,3,21,'1 TL'),
-(NULL,3,22,'½ TL');
+INSERT INTO contains (recipe_id, ingredient_id, menge) VALUES
+(3,18,'600 g'),
+(3,19,'1 Stück'),
+(3,20,'2 EL'),
+(3,21,'1 TL'),
+(3,22,'½ TL');
 
 -- Rezept 4: Rüebli Suppe (4 Portionen)
-INSERT INTO contains VALUES
-(NULL,4,23,'600 g'),
-(NULL,4,24,'1 Stück'),
-(NULL,4,25,'1 Zehe'),
-(NULL,4,26,'30 g'),
-(NULL,4,27,'1 l'),
-(NULL,4,28,'100 ml'),
-(NULL,4,29,'1 TL'),
-(NULL,4,30,'1 TL'),
-(NULL,4,31,'½ TL');
+INSERT INTO contains (recipe_id, ingredient_id, menge) VALUES
+(4,23,'600 g'),
+(4,24,'1 Stück'),
+(4,25,'1 Zehe'),
+(4,26,'30 g'),
+(4,27,'1 l'),
+(4,28,'100 ml'),
+(4,29,'1 TL'),
+(4,30,'1 TL'),
+(4,31,'½ TL');
 
 -- Rezept 5: Milchreis (4 Portionen)
-INSERT INTO contains VALUES
-(NULL,5,32,'250 g'),
-(NULL,5,33,'1 l'),
-(NULL,5,34,'50 g'),
-(NULL,5,35,'1 Päckchen'),
-(NULL,5,36,'1 TL'),
-(NULL,5,37,'20 g'),
-(NULL,5,38,'1 Prise'),
-(NULL,5,39,'200 g');
+INSERT INTO contains (recipe_id, ingredient_id, menge) VALUES
+(5,32,'250 g'),
+(5,33,'1 l'),
+(5,34,'50 g'),
+(5,35,'1 Päckchen'),
+(5,36,'1 TL'),
+(5,37,'20 g'),
+(5,38,'1 Prise'),
+(5,39,'200 g');
