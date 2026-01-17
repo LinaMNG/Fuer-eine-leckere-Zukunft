@@ -30,15 +30,20 @@
       <!-- Rezept Details Container -->
       <div class="recipe-details-container">
         
-        <!-- Zutaten -->
-      {% if recipe.ingredients %}
-      <div class="recipe-section">
-        <h3 style="color: #2d6a4f;">Zutaten</h3>
-        <ul>
-          {% for ingredient in recipe.ingredients %}
-          <li style = "color: #333;">{{ ingredient.ingredient_name }}</li>
-          {% endfor %}
-        </ul>
+<!-- Zutaten -->
+<!-- Zutaten -->
+        {% if ingredients %}
+        <div class="recipe-section">
+          <h3 style="color: #2d6a4f;">Zutaten ({{ recipe.recipe_mengenangaben }})</h3>
+          <ul>
+            {% for ingredient in ingredients %}
+            <li style="color: #333;">
+              <strong>{{ ingredient.menge }}</strong> {{ ingredient.ingredient_name }}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
         {% endif %}
         <!-- Portionen -->
         {% if recipe.recipe_mengenangaben %}
