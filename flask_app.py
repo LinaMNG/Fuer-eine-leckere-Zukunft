@@ -231,7 +231,8 @@ def recipe_detail(recipe_id):
 		# Zutaten über die contains-Tabelle laden (nur ingredient_name)
 		ingredients = db_read(
 			"""
-			SELECT i.ingredient_name
+			SELECT i.ingredient_name,
+			c.menge
 			FROM contains c
 			JOIN ingredient i ON c.ingredient_id = i.id
 			WHERE c.recipe_id = %s
