@@ -144,7 +144,7 @@ INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenan
 );
 
 
-INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_portionen, recipe_photo) VALUES (
+INSERT INTO recipes (recipe_id, recipe_name, recipe_instruction, recipe_mengenangaben, recipe_photo) VALUES (
     5,
     'Milchreis',
     '1. Milch in einem schweren Topf aufkochen.\n2. Rundkornreis und eine Prise Salz unterrühren.\n3. Hitze reduzieren und bei schwacher Hitze 30-35 Minuten köcheln lassen, gelegentlich umrühren.\n4. Wenn der Reis die Milch aufgesogen hat und cremig ist, Zucker und Vanillezucker unterrühren.\n5. Vom Herd nehmen und Butter unterrühren.\n6. Zugedeckt 10 Minuten ziehen lassen.\n7. Vor dem Servieren nochmals auflockern.\n8. Mit Zimt bestreut und Apfelmus servieren.',
