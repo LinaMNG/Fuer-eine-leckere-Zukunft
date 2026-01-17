@@ -239,7 +239,7 @@ def recipe_detail(recipe_id):
             """, (recipe_id,)
         )
         
-        return render_template('recipe_detail.html', 
+        return render_template('receipe_detail.html', 
                                recipe=recipe, 
                                ingredients=ingredients)  # ← Wichtig!
     else:
